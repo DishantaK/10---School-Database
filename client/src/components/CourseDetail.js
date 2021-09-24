@@ -1,14 +1,15 @@
 
 import React, {  useContext, useState, useEffect } from 'react';
-// import CourseContext from '../CourseContext';
+// import Context from '../Context';
 
 
 
 function CourseDetail() {
     // bring in course data, plug in below
-    let grabCurrent = window.location.pathname.replace("/courses/","");
+    let grabCurrent = window.location.pathname.replace("/courses/","");  // grabs current course id from route selected
     let [currentCourse, setcurrentCourse] = useState([]);
 
+    // set current course state to data matching the course with the same id # as grabCurrent on component render
     useEffect(() => {
         fetch(`http://localhost:5000/api/courses/${grabCurrent}`)
         .then((response) => response.json())
@@ -18,13 +19,6 @@ function CourseDetail() {
     
      
 
-    // if(!currentCourse){
-    //     console.log(grabCurrent)
-    //  }
-    
-    // let materials = currentCourse.materialsNeeded.split("\n");
-
-    //get data from matching course
      return (
         
         <main>

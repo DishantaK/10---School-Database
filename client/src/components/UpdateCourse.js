@@ -8,7 +8,7 @@ function UpdateCourse() {
         <main>
         <div className="wrap">
             <h2>Update Course</h2>
-            <form> {/* method post */ }
+            <form action="" method="put"> {/* method post */ }
                 <div className="main--flex">
                     <div>
                         <label for="courseTitle">Course Title</label> {/* existing title, description, etc */ }
@@ -27,7 +27,7 @@ function UpdateCourse() {
                         <textarea id="materialsNeeded" name="materialsNeeded">* 1/2 x 3/4 inch parting strip&#13;&#13;* 1 x 2 common pine&#13;&#13;* 1 x 4 common pine&#13;&#13;* 1 x 10 common pine&#13;&#13;* 1/4 inch thick lauan plywood&#13;&#13;* Finishing Nails&#13;&#13;* Sandpaper&#13;&#13;* Wood Glue&#13;&#13;* Wood Filler&#13;&#13;* Minwax Oil Based Polyurethane</textarea>
                     </div>
                 </div>
-                <button className="button" type="submit">Update Course</button><button className="button button-secondary" onclick="event.preventDefault(); location.href='/';">Cancel</button>
+                <button className="button" type="submit">Update Course</button><button className="button button-secondary" onclick="event.preventDefault(); location.href='/courses';">Cancel</button> {/* fix location */}
             </form>
         </div>
     </main>
