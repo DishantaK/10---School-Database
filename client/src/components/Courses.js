@@ -1,37 +1,43 @@
 import React, { useEffect, useState, createContext, useContext  } from "react";
-import CourseContext from '../CourseContext';
+// import CourseContext from '../CourseContext'; change to authcontext later 
 
 function Courses() {
   // data here
 
-  let courses = useContext(CourseContext);
-  
+  let [courses, setCourses] = useState([]);
+
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/courses")
+      .then((response) => response.json())
+      .then((data) => setCourses(data));
+  }, []); 
 
   return (
 
     <main>
-      <div class="wrap main--grid">
+      <div className="wrap main--grid">
         {courses?.map((course) => (
           <a
             className="course--module course--link"
-            href={`/courses/${course.id}`}
             key = {course.id}
-            // onClick={() => setCurrentCourse(`${course.id}`)}
+            href={`/courses/${course.id}`}
           >
+          
             <h2 className="course--label">Course</h2>
             <h3 className="course--title">{course.title}</h3>
           </a>
         ))}
 
-        <a class="course--module course--add--module" href="/courses/create">
-          <span class="course--add--title">
+        <a className="course--module course--add--module" href="/courses/create">
+          <span className="course--add--title">
             <svg
               version="1.1"
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
               y="0px"
               viewBox="0 0 13 13"
-              class="add"
+              className="add"
             >
               <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "></polygon>
             </svg>

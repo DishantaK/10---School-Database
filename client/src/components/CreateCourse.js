@@ -18,7 +18,7 @@ function CreateCourse() {
                         <label for="courseTitle">Course Title</label>
                         <input id="courseTitle" name="courseTitle" type="text" value="" />
 
-                        <p>By Joe Smith</p>
+                        <p>By Joe Smith</p> {/* come back to , to add/ populate user first and last name  */}
 
                         <label for="courseDescription">Course Description</label>
                         <textarea id="courseDescription" name="courseDescription"></textarea>

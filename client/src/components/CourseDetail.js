@@ -1,19 +1,37 @@
 
-import React, {  useContext  } from "react";
-import CourseContext from '../CourseContext';
+import React, {  useContext, useState, useEffect } from 'react';
+// import CourseContext from '../CourseContext';
+
+
 
 function CourseDetail() {
     // bring in course data, plug in below
+    let grabCurrent = window.location.pathname.replace("/courses/","");
+    let [currentCourse, setcurrentCourse] = useState([]);
 
-    let {courses, setCourses}= useContext(CourseContext);
-    let {currentCourse, setCurrentCourse  }= useContext(CourseContext);
-    let courseContent = courses.find(course => course.id == currentCourse);
+    useEffect(() => {
+        fetch(`http://localhost:5000/api/courses/${grabCurrent}`)
+        .then((response) => response.json())
+        .then((data) => setcurrentCourse(data))
+        .catch(error => console.log(error))
+     }, []); 
+    
+     
 
-    return (
+    // if(!currentCourse){
+    //     console.log(grabCurrent)
+    //  }
+    
+    // let materials = currentCourse.materialsNeeded.split("\n");
+
+    //get data from matching course
+     return (
+        
         <main>
+         
             <div className="actions--bar">
                 <div className="wrap">
-                    <a className="button" href={`/courses/${courses.id}/update`}>Update Course</a>
+                    <a className="button" href={`/courses/${grabCurrent}/update`}>Update Course</a>
                     <a className="button" href="#">Delete Course</a>
                     <a className="button button-secondary" href="/">Return to List</a>
                 </div>
@@ -25,21 +43,21 @@ function CourseDetail() {
                     <div className="main--flex">
                         <div>
                             <h3 className="course--detail--title">Course</h3>
-                            <h4 className="course--name">{courseContent.title}</h4>
-                            <p>By {courseContent.User.firstName} {courseContent.User.lastName}</p>
-                            <p>{courseContent.description}</p>
+                            <h4 className="course--name">{currentCourse.title}</h4>
+                            <p>By: </p>  
+                            <p>{currentCourse.description}</p>
                         </div>
                         <div>
-                            <h3 className="course--detail--title">{courseContent.estimatedTime}</h3>
-                            <p>14 hours</p>
+                            <h3 className="course--detail--title"> Estimated Time</h3>
+                            <p>{currentCourse.estimatedTime}</p>
 
-                            <h3 className="course--detail--title">{courseContent.materialsNeeded}</h3>
+                            <h3 className="course--detail--title"> Materials Needed</h3>
                             <ul className="course--detail--list">
-                                {
-                               //  split course.materialsNeeded and map over array
-                                
+                                {currentCourse.materialsNeeded}
+                                {/* {materials.map( (material) => {
+                                    <li> {material} </li>
                                 }
-                                <li>1/2 x 3/4 inch parting strip</li>
+                                )} */}
                            
                             </ul>
                         </div>
