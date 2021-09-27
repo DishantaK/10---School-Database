@@ -1,6 +1,50 @@
-import React from 'react'
+import React, {  useContext, useState, useEffect, useRef } from 'react'
 
-function UpdateCourse() {
+function UpdateCourse({context}) {
+    let grabCurrent = window.location.pathname.replace("/courses/","").replace("update","");  // grabs current course id from route selected
+    let [currentCourse, setcurrentCourse] = useState([]);
+    const {emailAddress, password} = context.authenticatedUser;
+    const [errors, setErrors] = useState({})
+    
+    useEffect(() => {
+        fetch(`http://localhost:5000/api/courses/${grabCurrent}`)
+        .then((response) => response.json())
+        .then((data) => setcurrentCourse(data))
+        .catch(error => console.log(error))
+     }, []); 
+    
+     const onChange = (e) => {
+        setcurrentCourse(prevValues => ({
+            ...prevValues,
+            [e.target.name]: e.target.value
+            }))
+        }
+
+    const form = useRef(null) 
+    const submit = e => {
+        e.preventDefault()
+        //  currentCourse.userId = authenticatedUser.id
+        context.data.updateCourse(currentCourse, {emailAddress, password})
+        .then(errors => {
+            if(errors.length){
+                console.log(errors)
+                setErrors({errors})
+            } else {
+                redirect();
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            redirect();
+        })
+        
+   
+
+      }
+     const redirect = (e) =>{
+        e.preventDefault();
+        window.location.pathname = '/courses';
+     }
 
     // get course data from use effect
     // post req on submit 
@@ -8,26 +52,26 @@ function UpdateCourse() {
         <main>
         <div className="wrap">
             <h2>Update Course</h2>
-            <form action="" method="put"> {/* method post */ }
+            <form onSubmit={submit} ref={form}> 
                 <div className="main--flex">
                     <div>
-                        <label for="courseTitle">Course Title</label> {/* existing title, description, etc */ }
-                        <input id="courseTitle" name="courseTitle" type="text" value="Build a Basic Bookcase" />
+                        <label htmlFor="courseTitle">Course Title</label> {/* existing title, description, etc */ }
+                        <input id="courseTitle" name="courseTitle" type="text" defaultValue={currentCourse.title}   onChange={onChange}/>
 
                         <p>By Joe Smith</p> {/*populate logged in user */ }
 
-                        <label for="courseDescription">Course Description</label>
-                        <textarea id="courseDescription" name="courseDescription">High-end furniture projects are great to dream about. But unless you have a well-equipped shop and some serious woodworking experience to draw on, it can be difficult to turn the dream into a reality.&#13;&#13;Not every piece of furniture needs to be a museum showpiece, though. Often a simple design does the job just as well and the experience gained in completing it goes a long way toward making the next project even better.&#13;&#13;Our pine bookcase, for example, features simple construction and it's designed to be built with basic woodworking tools. Yet, the finished project is a worthy and useful addition to any room of the house. While it's meant to rest on the floor, you can convert the bookcase to a wall-mounted storage unit by leaving off the baseboard. You can secure the cabinet to the wall by screwing through the cabinet cleats into the wall studs.&#13;&#13;We made the case out of materials available at most building-supply dealers and lumberyards, including 1/2 x 3/4-in. parting strip, 1 x 2, 1 x 4 and 1 x 10 common pine and 1/4-in.-thick lauan plywood. Assembly is quick and easy with glue and nails, and when you're done with construction you have the option of a painted or clear finish.&#13;&#13;As for basic tools, you'll need a portable circular saw, hammer, block plane, combination square, tape measure, metal rule, two clamps, nail set and putty knife. Other supplies include glue, nails, sandpaper, wood filler and varnish or paint and shellac.&#13;&#13;The specifications that follow will produce a bookcase with overall dimensions of 10 3/4 in. deep x 34 in. wide x 48 in. tall. While the depth of the case is directly tied to the 1 x 10 stock, you can vary the height, width and shelf spacing to suit your needs. Keep in mind, though, that extending the width of the cabinet may require the addition of central shelf supports.</textarea>
+                        <label htmlFor="courseDescription">Course Description</label>
+                        <textarea id="courseDescription" name="courseDescription" defaultValue={currentCourse.description}  onChange={onChange}></textarea>
                     </div>
                     <div>
-                        <label for="estimatedTime">Estimated Time</label>
-                        <input id="estimatedTime" name="estimatedTime" type="text" value="14 hours" />
+                        <label htmlFor="estimatedTime">Estimated Time</label>
+                        <input id="estimatedTime" name="estimatedTime" type="text" defaultValue={currentCourse.estimatedTime}   onChange={onChange}/>
 
-                        <label for="materialsNeeded">Materials Needed</label>
-                        <textarea id="materialsNeeded" name="materialsNeeded">* 1/2 x 3/4 inch parting strip&#13;&#13;* 1 x 2 common pine&#13;&#13;* 1 x 4 common pine&#13;&#13;* 1 x 10 common pine&#13;&#13;* 1/4 inch thick lauan plywood&#13;&#13;* Finishing Nails&#13;&#13;* Sandpaper&#13;&#13;* Wood Glue&#13;&#13;* Wood Filler&#13;&#13;* Minwax Oil Based Polyurethane</textarea>
+                        <label htmlFor="materialsNeeded">Materials Needed</label>
+                        <textarea id="materialsNeeded" name="materialsNeeded" defaultValue={currentCourse.materialsNeeded}  onChange={onChange}></textarea>
                     </div>
                 </div>
-                <button className="button" type="submit">Update Course</button><button className="button button-secondary" onclick="event.preventDefault(); location.href='/courses';">Cancel</button> {/* fix location */}
+                <button className="button" type="submit">Update Course</button><button type="button" className="button button-secondary" onClick={redirect}  onChange={onChange}>Cancel</button>
             </form>
         </div>
     </main>

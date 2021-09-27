@@ -1,18 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './styles/reset.css';
-import './styles/global.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./styles/reset.css";
+import "./styles/global.css";
 
+import { Provider } from "./Context";
+import App from "./App";
 
-
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </Provider>,
+  document.getElementById("root")
 );
 
-reportWebVitals();
+

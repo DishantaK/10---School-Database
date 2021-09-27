@@ -1,60 +1,100 @@
 import React, {  useContext, useState, useEffect, useRef } from 'react';
+import Form from './Form'
 
-function CreateCourse() {
-    // works add validation and conditional rendering of errors
+
+
+function CreateCourse({ context }) {
+
+    // State
+ 
     let [currentCourse, setcurrentCourse] = useState([]);
-    const form = useRef(null) 
-    
-    const submit = e => {
-        e.preventDefault()
-        const getData = new FormData(form.current);
-        fetch('http://localhost:5000/api/courses/', {
-          method: 'POST',
-          body: JSON.stringify(getData),
-          headers: { 'Content-Type': 'application/json' },
-        })
-        .then((data) => setcurrentCourse(data))
-        .catch(error => console.log(error))
-      }
-     const redirect = (e) =>{
-         e.preventDefault();
-         window.location.pathname = '/courses';
 
+    const [errors, setErrors] = useState({})
+
+    const authUser = context.authenticatedUser;
+    const {emailAddress, password} = context.authenticatedUser;
+  
+  
+   const onChange = (e) => {
+    setcurrentCourse(prevValues => ({
+        ...prevValues,
+        [e.target.name]: e.target.value ,
+        }))
+    }
+
+ 
+    const submit = e => { // Submits course
+        // currentCourse.userId = authenticatedUser.id
+        context.data.createCourse(currentCourse, {emailAddress, password})
+        .then(errors => {
+            if(errors.length){
+                console.log(errors)
+                setErrors({errors})
+            } else {
+                redirect();
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            redirect();
+        })
+        }
+   
+
+      
+     const redirect = (e) =>{
+         window.location.pathname = '/courses';
      }
     return (
         <main>
-        <div className="wrap">
-            <h2>Create Course</h2>
-            {/* <div className="validation--errors">
-                <h3>Validation Errors</h3>
-                <ul>
-                    <li>Please provide a defaultValue for "Title"</li>
-                    <li>Please provide a defaultValue for "Description"</li>
-                </ul>
-            </div> */}
-            <form onSubmit={submit} ref={form}>
-                <div className="main--flex">
-                    <div>
-                        <label htmlFor="courseTitle">Course Title</label>
-                        <input id="courseTitle" name="courseTitle" type="text" defaultValue="" />
+            <div className='wrap'>
+                <h2> Create Course </h2>
+                <Form 
+                    cancel={redirect}
+                    errors={errors}
+                    submit={submit}
+                    submitButtonText='Create Course'
+                    elements={ () =>(
+                        <div className='main--flex'>
+                            <div>
+                                <label htmlFor='title'> Course Title </label>
 
-                        <p>By Joe Smith</p> {/* come back to , to add/ populate user first and last name  */}
+                                <input
+                                    id='title'
+                                    name='title'
+                                    type='text'
+                                    onChange={onChange}
+                                />
 
-                        <label htmlFor="courseDescription">Course Description</label>
-                        <textarea id="courseDescription" name="courseDescription"></textarea>
-                    </div>
-                    <div>
-                        <label htmlFor="estimatedTime">Estimated Time</label>
-                        <input id="estimatedTime" name="estimatedTime" type="text" defaultValue="" />
+                                <label htmlFor='descirption'> Course Description </label>
+                                <textarea
+                                    id='description'
+                                    name='description'
+                                    onChange={onChange}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor='estimatedTime'> Estimate Time </label>
+                                <input
+                                    id='estimatedTime'
+                                    name='estimatedTime'
+                                    type='text'
+                                    onChange={onChange}
+                                />
 
-                        <label htmlFor="materialsNeeded">Materials Needed</label>
-                        <textarea id="materialsNeeded" name="materialsNeeded"></textarea>
-                    </div>
-                </div>
-                <button className="button" type="submit">Create Course</button> <button type ="button" className="button button-secondary" onClick={redirect}>Cancel</button>
-            </form>
-        </div>
-    </main>
+                                <label htmlFor='materialsNeeded'> Materials Needed </label>
+                                <textarea
+                                    id='materialsNeeded'
+                                    name='materialsNeeded'
+                                    onChange={onChange}
+                                />
+                                    
+                            </div>
+                        </div>                        
+                    )}
+                />
+            </div>
+        </main>
     )
 }
 

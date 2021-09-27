@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext, useContext  } from "react";
+import React, { useEffect, useState, } from "react";
 // import CourseContext from '../CourseContext'; change to authcontext later 
 
 function Courses() {

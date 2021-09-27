@@ -1,13 +1,15 @@
 
 import React, {  useContext, useState, useEffect } from 'react';
-// import Context from '../Context';
-
-
-
-function CourseDetail() {
+import ReactMarkdown from 'react-markdown'
+import ReactDom from 'react-dom'
+ 
+function CourseDetail({ context  }) {
+    const authUser = context.authenticatedUser;
+    const {emailAddress, password} = context.authenticatedUser;
     // bring in course data, plug in below
     let grabCurrent = window.location.pathname.replace("/courses/","");  // grabs current course id from route selected
     let [currentCourse, setcurrentCourse] = useState([]);
+    const [errors, setErrors] = useState({})
 
     // set current course state to data matching the course with the same id # as grabCurrent on component render
     useEffect(() => {
@@ -16,8 +18,28 @@ function CourseDetail() {
         .then((data) => setcurrentCourse(data))
         .catch(error => console.log(error))
      }, []); 
+
+     const redirect = (e) =>{
+        e.preventDefault();
+        window.location.pathname = '/courses';
+     }
     
-     
+     const submit = e => {
+        context.data.deleteCourse(currentCourse, {emailAddress, password})
+        .then(errors => {
+            if(errors.length){
+                console.log(errors)
+                setErrors({errors})
+            } else {
+                redirect();
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            redirect();
+        })
+        
+     }
 
      return (
         
@@ -25,9 +47,15 @@ function CourseDetail() {
          
             <div className="actions--bar">
                 <div className="wrap">
-                    <a className="button" href={`/courses/${grabCurrent}/update`}>Update Course</a>
-                    <a className="button" href="#">Delete Course</a>
+                {authUser ? (
+                     <React.Fragment>
+                     <a className="button" href={`/courses/${grabCurrent}/update`}>Update Course</a>
+                    <a className="button" href="#" onClick={submit}>Delete Course</a>
                     <a className="button button-secondary" href="/">Return to List</a>
+                    </React.Fragment>
+                ) : (
+                    <a className="button button-secondary" href="/">Return to List</a>
+                )}
                 </div>
             </div>
             
@@ -39,7 +67,12 @@ function CourseDetail() {
                             <h3 className="course--detail--title">Course</h3>
                             <h4 className="course--name">{currentCourse.title}</h4>
                             <p>By: </p>  
-                            <p>{currentCourse.description}</p>
+                            <p>  
+                            <ReactMarkdown>
+                                {currentCourse.description}
+                            </ReactMarkdown>
+                               
+                                </p>
                         </div>
                         <div>
                             <h3 className="course--detail--title"> Estimated Time</h3>
@@ -47,11 +80,9 @@ function CourseDetail() {
 
                             <h3 className="course--detail--title"> Materials Needed</h3>
                             <ul className="course--detail--list">
+                            <ReactMarkdown>
                                 {currentCourse.materialsNeeded}
-                                {/* {materials.map( (material) => {
-                                    <li> {material} </li>
-                                }
-                                )} */}
+                            </ReactMarkdown>
                            
                             </ul>
                         </div>
