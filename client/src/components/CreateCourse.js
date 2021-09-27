@@ -8,12 +8,15 @@ function CreateCourse({ context }) {
     // State
  
     let [currentCourse, setcurrentCourse] = useState([]);
-
+    
     const [errors, setErrors] = useState({})
 
-    const authUser = context.authenticatedUser;
+    const authenticatedUser = context.authenticatedUser;
     const {emailAddress, password} = context.authenticatedUser;
-  
+   
+
+
+   
   
    const onChange = (e) => {
     setcurrentCourse(prevValues => ({
@@ -24,7 +27,10 @@ function CreateCourse({ context }) {
 
  
     const submit = e => { // Submits course
-        // currentCourse.userId = authenticatedUser.id
+        let userId = authenticatedUser.id
+        setcurrentCourse(prevValues => ({
+            ...prevValues, userId
+            }))
         context.data.createCourse(currentCourse, {emailAddress, password})
         .then(errors => {
             if(errors.length){
