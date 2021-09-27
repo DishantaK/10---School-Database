@@ -1,107 +1,117 @@
-import React, {  useContext, useState, useEffect, useRef } from 'react';
-import Form from './Form'
-
-
+import React, { useContext, useState, useEffect, useRef } from "react";
+import Form from "./Form";
 
 function CreateCourse({ context }) {
+  // State
 
-    // State
- 
-    let [currentCourse, setcurrentCourse] = useState([]);
-    
-    const [errors, setErrors] = useState({})
+  let [currentCourse, setcurrentCourse] = useState([]);
+  const [errors, setErrors] = useState({});
+  const { emailAddress, password } = context.authenticatedUser;
+  const [userId] = useState(
+    context.authenticatedUser ? context.authenticatedUser.id : null
+  );
 
-    const authenticatedUser = context.authenticatedUser;
-    const {emailAddress, password} = context.authenticatedUser;
-   
+  const onChange = (e) => {
+    setcurrentCourse((prevValues) => ({
+      ...prevValues,
+      [e.target.name]: e.target.value,
+      userId:  context.authenticatedUser ? context.authenticatedUser.id : null
+    }));
+  };
 
+  const submit = (e) => {
+    // Submits course
 
-   
-  
-   const onChange = (e) => {
-    setcurrentCourse(prevValues => ({
-        ...prevValues,
-        [e.target.name]: e.target.value ,
-        }))
-    }
-
- 
-    const submit = e => { // Submits course
-        let userId = authenticatedUser.id
-        setcurrentCourse(prevValues => ({
-            ...prevValues, userId
-            }))
-        context.data.createCourse(currentCourse, {emailAddress, password})
-        .then(errors => {
-            if(errors.length){
-                console.log(errors)
-                setErrors({errors})
-            } else {
-                redirect();
-            }
-        })
-        .catch(error => {
-            console.log(error)
-            redirect();
-        })
+    setcurrentCourse((prevValues) => ({
+      ...prevValues,
+      userId,
+    }));
+    context.data
+      .createCourse(currentCourse, emailAddress, password)
+      .then((errors) => {
+        if (errors.length) {
+          console.log(errors);
+          setErrors({ errors });
+        } else {
+          redirect();
         }
-   
+      })
+      .catch((error) => {
+        console.log(error);
+        redirect();
+      });
+  };
 
-      
-     const redirect = (e) =>{
-         window.location.pathname = '/courses';
-     }
-    return (
-        <main>
-            <div className='wrap'>
-                <h2> Create Course </h2>
-                <Form 
-                    cancel={redirect}
-                    errors={errors}
-                    submit={submit}
-                    submitButtonText='Create Course'
-                    elements={ () =>(
-                        <div className='main--flex'>
-                            <div>
-                                <label htmlFor='title'> Course Title </label>
+  const redirect = (e) => {
+    window.location.pathname = "/courses";
+  };
+  return (
+    <main>
+      <div className="wrap">
+        <h2> Create Course </h2>
 
-                                <input
-                                    id='title'
-                                    name='title'
-                                    type='text'
-                                    onChange={onChange}
-                                />
+        {errors.length ? (
+          <div className="validation--errors">
+            <h3>Validation Errors</h3>
+            <ul>
+              {errors.map((err, i) => {
+                return <li key={i}>{err}</li>;
+              })}
+            </ul>
+          </div>
+        ) : (
+          <></>
+        )}
 
-                                <label htmlFor='descirption'> Course Description </label>
-                                <textarea
-                                    id='description'
-                                    name='description'
-                                    onChange={onChange}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor='estimatedTime'> Estimate Time </label>
-                                <input
-                                    id='estimatedTime'
-                                    name='estimatedTime'
-                                    type='text'
-                                    onChange={onChange}
-                                />
+        <Form
+          cancel={redirect}
+          errors={errors}
+          submit={submit}
+          submitButtonText="Create Course"
+          elements={() => (
+            <div className="main--flex">
+              <div>
+                <label htmlFor="title"> Course Title </label>
 
-                                <label htmlFor='materialsNeeded'> Materials Needed </label>
-                                <textarea
-                                    id='materialsNeeded'
-                                    name='materialsNeeded'
-                                    onChange={onChange}
-                                />
-                                    
-                            </div>
-                        </div>                        
-                    )}
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  onChange={onChange}
                 />
+                <p>
+                  By {context.authenticatedUser.firstName}{" "}
+                  {context.authenticatedUser.lastName}
+                </p>
+                <label htmlFor="descirption"> Course Description </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  onChange={onChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="estimatedTime"> Estimate Time </label>
+                <input
+                  id="estimatedTime"
+                  name="estimatedTime"
+                  type="text"
+                  onChange={onChange}
+                />
+
+                <label htmlFor="materialsNeeded"> Materials Needed </label>
+                <textarea
+                  id="materialsNeeded"
+                  name="materialsNeeded"
+                  onChange={onChange}
+                />
+              </div>
             </div>
-        </main>
-    )
+          )}
+        />
+      </div>
+    </main>
+  );
 }
 
-export default CreateCourse
+export default CreateCourse;

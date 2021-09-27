@@ -50,7 +50,7 @@ export default class Data {
     }
   }
 
-  async createCourse(course, { emailAddress, password }){
+  async createCourse(course, emailAddress, password){
     const response = await this.api('/courses', 'POST', course, true, {emailAddress, password})
     if(response.status === 201){
       return []
@@ -64,7 +64,7 @@ export default class Data {
       throw new Error()
     }
   }
-  async updateCourse(id, course, { emailAddress, password }){
+  async updateCourse(id, course,  emailAddress, password ){
     const response = await this.api(`/courses/${id}`, 'PUT', course, true, {emailAddress, password})
     if(response.status === 204){
       return []
@@ -75,7 +75,7 @@ export default class Data {
       throw new Error()
     }
   }
-  async deleteCourse(id, { emailAddress, password }){
+  async deleteCourse(id, emailAddress, password ){
     const response = await this.api(`/courses/${id}`, 'DELETE', null, true, {emailAddress, password})
     if(response.status === 204){
       return []

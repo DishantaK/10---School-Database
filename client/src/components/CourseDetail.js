@@ -6,11 +6,13 @@ import ReactDom from 'react-dom'
 function CourseDetail({ context  }) {
     const authUser = context.authenticatedUser;
     const {emailAddress, password} = context.authenticatedUser;
-    // bring in course data, plug in below
+    const [userId] = useState(
+    context.authenticatedUser ? context.authenticatedUser.id : null
+  );
     let grabCurrent = window.location.pathname.replace("/courses/","");  // grabs current course id from route selected
     let [currentCourse, setcurrentCourse] = useState([]);
     const [errors, setErrors] = useState({})
-
+  
     // set current course state to data matching the course with the same id # as grabCurrent on component render
     useEffect(() => {
         fetch(`http://localhost:5000/api/courses/${grabCurrent}`)
@@ -20,12 +22,12 @@ function CourseDetail({ context  }) {
      }, []); 
 
      const redirect = (e) =>{
-        e.preventDefault();
+  
         window.location.pathname = '/courses';
      }
     
      const submit = e => {
-        context.data.deleteCourse(currentCourse, {emailAddress, password})
+        context.data.deleteCourse(grabCurrent, emailAddress, password)
         .then(errors => {
             if(errors.length){
                 console.log(errors)
@@ -67,12 +69,12 @@ function CourseDetail({ context  }) {
                             <h3 className="course--detail--title">Course</h3>
                             <h4 className="course--name">{currentCourse.title}</h4>
                             <p>By: </p>  
-                            <p>  
+                        
                             <ReactMarkdown>
                                 {currentCourse.description}
                             </ReactMarkdown>
                                
-                                </p>
+                           
                         </div>
                         <div>
                             <h3 className="course--detail--title"> Estimated Time</h3>

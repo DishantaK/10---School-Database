@@ -1,11 +1,15 @@
-import React, {  useContext, useState, useEffect, useRef } from 'react'
+import React, {  useState, useEffect, useRef } from 'react'
 
 function UpdateCourse({context}) {
     let grabCurrent = window.location.pathname.replace("/courses/","").replace("update","");  // grabs current course id from route selected
     let [currentCourse, setcurrentCourse] = useState([]);
     const {emailAddress, password} = context.authenticatedUser;
     const [errors, setErrors] = useState({})
-    
+    const [userId] = useState(
+      context.authenticatedUser ? context.authenticatedUser.id : null
+    );
+
+
     useEffect(() => {
         fetch(`http://localhost:5000/api/courses/${grabCurrent}`)
         .then((response) => response.json())
@@ -16,15 +20,16 @@ function UpdateCourse({context}) {
      const onChange = (e) => {
         setcurrentCourse(prevValues => ({
             ...prevValues,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
+            userId:  context.authenticatedUser ? context.authenticatedUser.id : null
             }))
         }
 
     const form = useRef(null) 
     const submit = e => {
-        e.preventDefault()
-        //  currentCourse.userId = authenticatedUser.id
-        context.data.updateCourse(currentCourse, {emailAddress, password})
+
+    //    if( currentCourse.userId == context.authenticatedUser) {
+        context.data.updateCourse(grabCurrent, currentCourse, emailAddress, password)
         .then(errors => {
             if(errors.length){
                 console.log(errors)
@@ -37,12 +42,10 @@ function UpdateCourse({context}) {
             console.log(error)
             redirect();
         })
-        
-   
 
       }
      const redirect = (e) =>{
-        e.preventDefault();
+
         window.location.pathname = '/courses';
      }
 
@@ -55,10 +58,10 @@ function UpdateCourse({context}) {
             <form onSubmit={submit} ref={form}> 
                 <div className="main--flex">
                     <div>
-                        <label htmlFor="courseTitle">Course Title</label> {/* existing title, description, etc */ }
+                        <label htmlFor="courseTitle">Course Title</label>
                         <input id="courseTitle" name="courseTitle" type="text" defaultValue={currentCourse.title}   onChange={onChange}/>
 
-                        <p>By Joe Smith</p> {/*populate logged in user */ }
+                        {/* <p>By {currentCourse.User.firstName} {currentCourse.User.lastName}</p>  */}
 
                         <label htmlFor="courseDescription">Course Description</label>
                         <textarea id="courseDescription" name="courseDescription" defaultValue={currentCourse.description}  onChange={onChange}></textarea>
