@@ -72,10 +72,11 @@ router.put('/:id', authenticateUser, async function(req, res) {
               .json({message: "Update Failed. No permissions."})
           }
         } catch(error) {
-            if(error.name === "SequelizeValidationError") { 
+            if(error.name === "SequelizeValidationError" ||
+            error.name === "SequelizeUniqueConstraintError") { 
               const errors = error.errors.map(error => error.message);
                 // await course.update(req.body);
-                res.status(400).json(error.errors).end()
+                res.status(400).json({ errors }).end()
               } else {
                 throw error; 
               }  

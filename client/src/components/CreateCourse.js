@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, {useState  } from "react";
 import Form from "./Form";
 
 function CreateCourse({ context }) {
   // State
 
   let [currentCourse, setcurrentCourse] = useState([]);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState([]);
   const { emailAddress, password } = context.authenticatedUser;
   const [userId] = useState(
     context.authenticatedUser ? context.authenticatedUser.id : null
@@ -28,17 +28,16 @@ function CreateCourse({ context }) {
     }));
     context.data
       .createCourse(currentCourse, emailAddress, password)
-      .then((errors) => {
-        if (errors.length) {
-          console.log(errors);
-          setErrors({ errors });
+      .then(errors => {
+        if(errors.length){
+            console.log(errors)
+            setErrors({errors})
         } else {
-          redirect();
-        }
-      })
+           redirect();
+        }})
       .catch((error) => {
         console.log(error);
-        redirect();
+        window.location.redirect('/error');
       });
   };
 
@@ -50,11 +49,11 @@ function CreateCourse({ context }) {
       <div className="wrap">
         <h2> Create Course </h2>
 
-        {errors.length ? (
+        {errors.errors ? (
           <div className="validation--errors">
             <h3>Validation Errors</h3>
             <ul>
-              {errors.map((err, i) => {
+              {errors.errors.map((err, i) => {
                 return <li key={i}>{err}</li>;
               })}
             </ul>
@@ -78,6 +77,7 @@ function CreateCourse({ context }) {
                   name="title"
                   type="text"
                   onChange={onChange}
+                
                 />
                 <p>
                   By {context.authenticatedUser.firstName}{" "}
@@ -88,6 +88,7 @@ function CreateCourse({ context }) {
                   id="description"
                   name="description"
                   onChange={onChange}
+              
                 />
               </div>
               <div>
