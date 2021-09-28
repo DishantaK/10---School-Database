@@ -24,6 +24,18 @@ export default class UserSignUp extends Component {
       <main>
         <div className="form--centered">
         <h2>Sign Up</h2>
+        {errors.errors ? (
+          <div className="validation--errors">
+            <h3>Validation Errors</h3>
+            <ul>
+              {errors.errors.map((err, i) => {
+                return <li key={i}>{err}</li>;
+              })}
+            </ul>
+          </div>
+        ) : (
+          <></>
+        )}
           <Form 
             cancel={this.cancel}
             errors={errors}
