@@ -4,7 +4,7 @@ import Form from "./Form";
 function CreateCourse({ context }) {
   // State
 
-  let [currentCourse, setcurrentCourse] = useState([]);
+  let [currentCourse, setcurrentCourse] = useState({});
   const [errors, setErrors] = useState([]);
   const { emailAddress, password } = context.authenticatedUser;
   const [userId] = useState(
@@ -19,14 +19,14 @@ function CreateCourse({ context }) {
     }));
   };
 
-  const submit = (e) => {
+  const submit =   (e) => {
     // Submits course
-
-    setcurrentCourse((prevValues) => ({
+ 
+   setcurrentCourse((prevValues) => ({
       ...prevValues,
       userId,
     }));
-    context.data
+  context.data
       .createCourse(currentCourse, emailAddress, password)
       .then(errors => {
         if(errors.length){

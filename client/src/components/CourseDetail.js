@@ -33,6 +33,7 @@ function CourseDetail({ context  }) {
         fetch(`http://localhost:5000/api/courses/${grabCurrent}`)
         .then((response) => response.json())
         .then((data) => 
+             
             setUser(data.User)
             )
       

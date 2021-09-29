@@ -40,9 +40,9 @@ function UpdateCourse({ context }) {
           console.log(errors);
           setErrors({ errors });
         } 
-        // else {
-        //   redirect();
-        // }
+        else {
+          redirect();
+        }
       })
       .catch((error) => {
         console.log(error);

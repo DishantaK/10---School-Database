@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { Course, User } = require('../models');
+
 const { authenticateUser } = require('../auth');
 // return all courses including the User associated with each course and a 200 HTTP status code.
 
@@ -32,12 +33,12 @@ router.get('/:id', async function(req, res) {
    
 });
 
-// create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code
+// // create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code
 router.post('/', authenticateUser, async function(req, res) {
-  let course;
+   let course =  await req.body;
     try {
-      course = await Course.create(req.body);
-      res.location(`/courses/${course.id}`).status(201).end();
+    await Course.create(course);
+     res.location(`/courses/${course.id}`).status(201).end();
     } catch (error) {
       if (
         error.name === "SequelizeValidationError" ||
@@ -50,7 +51,6 @@ router.post('/', authenticateUser, async function(req, res) {
       }
     }
 });
-
 
 
 
