@@ -34,22 +34,27 @@ router.get('/:id', async function(req, res) {
 
 // create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code
 router.post('/', authenticateUser, async function(req, res) {
-
- // if title and description null, reject
-    try{
-        let newCourse = await Course.create(req.body);
-        console.log(newCourse)
-        res.status(201).location(`/${newCourse.id}`).end()
+  let course;
+    try {
+      course = await Course.create(req.body);
+      res.location(`/courses/${course.id}`).status(201).end();
     } catch (error) {
-        if(error.name === "SequelizeValidationError") { 
-          const errors = error.errors.map(error => error.message);
-            // let newCourse = await Course.create(req.body);
-            res.status(400).json({ errors })
-          } else {
-            throw error; 
-          }  
+      if (
+        error.name === "SequelizeValidationError" ||
+        error.name === "SequelizeUniqueConstraintError"
+      ) {
+        const errors = error.errors.map((err) => err.message);
+        res.status(400).json({ errors });
+      } else {
+        throw error;
+      }
     }
 });
+
+
+
+
+
 
 // update the corresponding course and return a 204 HTTP status code 
 router.put('/:id', authenticateUser, async function(req, res) {

@@ -35,6 +35,12 @@ const courseRouter = require('./routes/course');
 // create the Express app
 const app = express();
 
+// Handle Promise rejection errors with more information
+process.on('unhandledRejection', (error, p) => {
+  console.log('=== UNHANDLED REJECTION ===');
+  console.dir(error.stack);
+});
+
 // Setup request body JSON parsing.
 app.use(express.json());
 

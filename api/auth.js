@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 
 exports.authenticateUser = async (req, res, next) => {
     // Parse the user's credentials from the Authorization header.
-    let message;
+    let message = null;
   
     const credentials = auth(req);
   
