@@ -50,7 +50,7 @@ function UpdateCourse({ context }) {
       });
   };
   const redirect = (e) => {
-    window.location.pathname = "/courses";
+    window.location.pathname = `/courses/${grabCurrent}`;
   };
 
   // get course data from use effect

@@ -37,7 +37,7 @@ function CreateCourse({ context }) {
         }})
       .catch((error) => {
         console.log(error);
-        window.location.redirect('/error');
+        window.location.pathname = "/courses/create";
       });
   };
 
