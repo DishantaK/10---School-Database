@@ -14,12 +14,14 @@ function UpdateCourse({ context }) {
     context.authenticatedUser ? context.authenticatedUser.id : null
   );
 
+  console.log(userId);
+  console.log(errors);
   useEffect(() => {
     fetch(`http://localhost:5000/api/courses/${grabCurrent}`)
       .then((response) => response.json())
       .then((data) => setcurrentCourse(data))
       .catch((error) => console.log(error));
-  }, []);
+  }, [grabCurrent]);
 
   const onChange = (e) => {
     setcurrentCourse((prevValues) => ({
